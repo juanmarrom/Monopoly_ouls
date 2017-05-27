@@ -14,54 +14,91 @@
 
         </script>
         <script>
-                $(document).ready(function() {
-                        $('#submit').click(function(event) {
-                                var nombreVar = $('#nombre').val();
-                                var apellidoVar = $('#apellido').val();
-                                var edadVar = $('#edad').val();
-                                // Si en vez de por post lo queremos hacer por get, cambiamos el $.post por $.get
-                                /*$.post('test', {
-                                        nombre : nombreVar,
-                                        apellido: apellidoVar,
-                                        edad: edadVar
-                                }, function(responseText) {
-                                        $('#tabla').html(responseText);
-                                });*/
-
-                                /*$.post( "test2", { nombre : nombreVar,
-                                        apellido: apellidoVar,
-                                        edad: edadVar })
-                                    .done(function( data ) {
-                                        $('#tabla').html(data);
-                                });*/
-                                nombreVar = "inicializar";
-                                $.ajax({
-                                  data: {"nombre":nombreVar, "apellido":apellidoVar,"edad":edadVar},
-                                  url: "Monopoly_Servlet",
-                                  type: "post",
-                                  dataType: "html",
-                                  success: function(response) {
-                                        alert(response);
-					$('#tabla').html(response);
-                                  }
-				
-                                }); 
-                                          
-                                
-                        });
+                $(document).ready(function() {                      
+                    nombreVar = "inicializar";
+                    $.ajax({
+                      data: {"accion":nombreVar},
+                      url: "Monopoly_Servlet",
+                      type: "post",
+                      dataType: "html",
+                      success: function(response) {
+                            alert(response);
+                            $('#tablero').html(response);
+                      }
+                    });
+                    nombreVar = "inicializar_jugadores";
+                    $.ajax({
+                      data: {"accion":nombreVar},
+                      url: "Monopoly_Servlet",
+                      type: "post",
+                      dataType: "html",
+                      success: function(response) {
+                            alert(response);
+                            $('#menu').html(response);
+                      }
+                    });                                    
                 });
-        </script>        
+        </script>
+	   <style>
+		   * {
+				margin: 0;
+		   }
+		   html, body {
+				height: 100%;
+		   }
+		   
+		   .wrapper {
+			   min-height: 100%;
+			   height: auto !important;
+			   height: 100%;
+			   margin: 0 auto -4em;
+		   }
+		   .footer, .push {
+			   height: 2em;
+		   }
+		   
+		   #cabecera {
+				width: 100%;
+				margin: 0 auto 10px auto;
+				bottom: 0px;
+				background: #f8f8f8;
+			}
+		   
+		   #menu {
+				height: auto;
+				width: 240px;
+				min-width: 240px;
+				max-width: 240px;
+				float: left;
+				height: auto;
+				text-align: left;
+				margin-right: 5px;
+				border: 1px black
+			}
+
+			#tablero {
+				width: 100%;
+				background-color: #f8f8f8;
+				display: table-cell;
+				vertical-align: top;
+				border: 1px black
+			}
+	   </style>        
     </head>
     <body>
-	<h2>Ejemplo de AJAX con JSP y Servelts</h2>
-	<form id="form1">
-		Nombre:<input type="text" id="nombre" /> <br>
-		Apellido: <input type="text" id="apellido" /> <br>
-		Edad: <input type="text" id="edad" /> <br>
-		<input type="button" id="submit" value="Añadir" /> 
-	</form>
-	<br>
-	<!-- 	En este div metemos el contenido de la tabla con AJAX -->
-	<div id="tabla"></div>
-    </body>
+ 		<div id="cabecera">MONOPOLY
+		</div>
+		<div class="wrapper">
+			<div style="display:table;width:100%;">
+				<div id="menu" style="display: table-cell;">Menu</div>
+				<div id="tablero" style="display: table-cell;">
+					
+				</div>
+			</div>
+            <div class="push"></div>
+       </div>
+       <div class="footer">
+            <!--<p>Copyright (c) Juan Martínez Romero</p>--->
+       </div>
+   </body>
 </html>
