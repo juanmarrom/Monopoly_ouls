@@ -49,5 +49,124 @@ public class Casilla {
         this.precio_casa = precio_casa;
         this.precio_hotel = precio_hotel;
     }            
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return the nombre
+     */
+    public String getNombre() {
+        return nombre;
+    }
+
+    /**
+     * @return the es_comprable
+     */
+    public int getEs_comprable() {
+        return es_comprable;
+    }
+
+    /**
+     * @return the precio
+     */
+    public int getPrecio() {
+        return precio;
+    }
+
+    /**
+     * @return the color
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * @return the grupo
+     */
+    public int getGrupo() {
+        return grupo;
+    }
+
+    /**
+     * @return the total_grupo
+     */
+    public int getTotal_grupo() {
+        return total_grupo;
+    }
+
+    /**
+     * @return the tipo
+     */
+    public int getTipo() {
+        return tipo;
+    }
+
+    /**
+     * @return the alquiler
+     */
+    public int getAlquiler() {
+        return alquiler;
+    }
+
+    /**
+     * @return the alquiler_1
+     */
+    public int getAlquiler_1() {
+        return alquiler_1;
+    }
+
+    /**
+     * @return the alquiler_2
+     */
+    public int getAlquiler_2() {
+        return alquiler_2;
+    }
+
+    /**
+     * @return the alquiler_3
+     */
+    public int getAlquiler_3() {
+        return alquiler_3;
+    }
+
+    /**
+     * @return the alquiler_4
+     */
+    public int getAlquiler_4() {
+        return alquiler_4;
+    }
+
+    /**
+     * @return the alquiler_hotel
+     */
+    public int getAlquiler_hotel() {
+        return alquiler_hotel;
+    }
+
+    /**
+     * @return the hipoteca
+     */
+    public int getHipoteca() {
+        return hipoteca;
+    }
+
+    /**
+     * @return the precio_casa
+     */
+    public int getPrecio_casa() {
+        return precio_casa;
+    }
+
+    /**
+     * @return the precio_hotel
+     */
+    public int getPrecio_hotel() {
+        return precio_hotel;
+    }
                 
 }

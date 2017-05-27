@@ -18,7 +18,7 @@
              color: black;
              font-size: 30px;
             }   
-        </style>        
+        </style> 
     </head>
     <body>
         <center>

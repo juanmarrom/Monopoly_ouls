@@ -34,13 +34,14 @@
                                     .done(function( data ) {
                                         $('#tabla').html(data);
                                 });*/
-
+                                nombreVar = "inicializar";
                                 $.ajax({
                                   data: {"nombre":nombreVar, "apellido":apellidoVar,"edad":edadVar},
                                   url: "Monopoly_Servlet",
                                   type: "post",
                                   dataType: "html",
                                   success: function(response) {
+                                        alert(response);
 					$('#tabla').html(response);
                                   }
 				

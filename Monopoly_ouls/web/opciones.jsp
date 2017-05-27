@@ -16,6 +16,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Monopoly</title>
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script>
+                function continuar(valor) {
+                    $.ajax({
+                        data: {"nombre":valor},
+                        url: "Monopoly_Servlet",
+                        type: "post",
+                        dataType: "html",
+                        success: function(response) {
+                            location.href ="monopoly.jsp";  
+                        }
+                    }); 
+                }
+                
+        </script>          
+        
         <style type="text/css">   
             table, th, td {
                 font-size: 20px;
@@ -26,7 +42,7 @@
                 border: 1px solid black;
                 border-collapse: collapse;
             }
-        </style>     
+        </style>
     </head>
     <body>
         <center>    
@@ -37,12 +53,12 @@
             <br>
             <table>
                 <tr>
-                    <td onmouseover="this.style.background='black'; this.style.cursor='pointer'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='black';">
+                    <td onmouseover="this.style.background='black'; this.style.cursor='pointer'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='black';" onclick="continuar('nueva');">
                         Nueva Partida
                     </td>
                 </tr>                
                 <tr>
-                    <td onmouseover="this.style.background='black'; this.style.cursor='pointer'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='black';">
+                    <td onmouseover="this.style.background='black'; this.style.cursor='pointer'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='black';" onclick="continuar('cargar');">
                         Cargar Partida
                     </td>
                 </tr>
