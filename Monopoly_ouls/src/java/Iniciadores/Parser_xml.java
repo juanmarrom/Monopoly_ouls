@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package parser_xml;
+package Iniciadores;
 
 import java.io.File;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,7 +28,7 @@ public class Parser_xml {
             System.out.println ("Directorio actual: " + miDir.getCanonicalPath());
             System.out.println ("Directorio actual: " + miDir.getAbsolutePath());
             System.out.println ("Directorio actual: " + miDir.getPath());
-            System.out.println ("Fichero: " + miDir.getCanonicalPath() + "\\src\\parser_xml\\test.xml"); 
+            System.out.println ("Fichero: " + miDir.getCanonicalPath() + "\\src\\java\\Datos\\test.xml"); 
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -36,7 +36,7 @@ public class Parser_xml {
             
         
         try {	
-            File inputFile = new File(miDir.getCanonicalPath() + "\\src\\parser_xml\\test.xml");
+            File inputFile = new File(miDir.getCanonicalPath() + "\\src\\java\\Datos\\test.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);

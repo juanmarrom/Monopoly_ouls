@@ -9,9 +9,27 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Monopoly</title>
+        <style type="text/css">   
+            a:link   
+            {   
+             text-decoration:none;
+             font-family: sans-serif;
+             color: black;
+             font-size: 30px;
+            }   
+        </style>        
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <center>
+            <h2>Bienvenidos al Monopoly Versión Eduard-Victor-Juan</h2>
+            <br>
+            <img src="img/monopoly.png" />
+            <br>
+            <br>
+            <button>
+                <a href="opciones.jsp">Empezar a Jugar</a>
+            </button>
+        </center>
     </body>
 </html>
