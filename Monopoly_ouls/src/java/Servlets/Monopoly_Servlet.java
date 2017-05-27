@@ -142,99 +142,52 @@ public class Monopoly_Servlet extends HttpServlet {
         Tablero tablero = (Tablero) session.getAttribute("tablero");
         ArrayList casillas = tablero.getCasillas();
         System.out.println("TEST7: '");
-        String ret = "";
-        ret += "<table style= cellspacing='1' bgcolor='#0099cc'>";
-        ret += "<tr>";
-        ret += "<td style= rowspan='7' align='center' bgcolor='#f8f8f8'>Hay " + casillas.size() + " Casillas</td>";
-        ret += "</tr>";
-        ret += "</table>";   
-        return ret;
-        /*out.println("<table border='1px black' style='border-collapse:collapse;'>");
-        out.println("<tr>");
-        out.println("<td colspan='15'> TABLERO MONOPOLY</td>");
-        out.println("</tr>");
-        ArrayList casillas = tablero.getCasillas();
-        for(int i=0; i < casillas.size(); i++) {            
-            System.out.println(casillas.get(i));
-            Casilla casilla = (Casilla)casillas.get(i);
-            if (i == 0) {
-                out.println("<tr>");
-            }
-            if (i >= 0 && i <= 9) {
-                String fila = "<td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>" + casilla.getNombre() + "<br>" + casilla.getPrecio() + "</td></tr></table></td>";
-            }
-            if (i == 9) {
-                out.println("</tr>");
-                out.println("<tr>");
-            }
-           if (i == 10) {
-                out.println("<td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>\n" +
-"                        <td colspan='8' rowspan='8' style='border-bottom:0px;border-top:0px;vertical-align=middle' align='center'>\n" +
-"                                <img src='monopoly.png'/>\n" +
-"                        </td>\n" +
-"");
-                
-            }            
         
+        String ret = "<table border='1px black' style='border-collapse:collapse;'><tr><td colspan='15'> TABLERO MONOPOLY</td></tr>";                    
+        ret += "<tr>";
+        for (int i = 20; i <= 30; i++) {
+            Casilla casilla = (Casilla)casillas.get(i);
+            String str_casilla = dibujar_casilla(casilla);
+            ret += "<td>" + str_casilla + "</td>";
         }
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td colspan='8' rowspan='8' style='border-bottom:0px;border-top:0px;vertical-align=middle' align='center'>
-                                <img src='monopoly.png'/>
-                        </td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
+        ret += "</tr><tr>";
+        Casilla casilla = (Casilla)casillas.get(19);
+        String str_casilla = dibujar_casilla(casilla);
+        ret += "<td>" + str_casilla + "</td>";
+        ret += "<td colspan='9' rowspan='9' style='border-bottom:0px;border-top:0px;vertical-align=middle' align='center'><img src='img/monopoly.png'/></td>";
+        casilla = (Casilla)casillas.get(31);
+        str_casilla = dibujar_casilla(casilla);
+        ret += "<td>" + str_casilla + "</td></tr>";
+        
+        int j = 0;
+        for (int i = 18; i >= 11; i--) {
+           
+           casilla = (Casilla)casillas.get(i);
+           str_casilla = dibujar_casilla(casilla);
+           ret += "<tr><td>" + str_casilla + "</td>"; 
 
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
+           int k = i + (12 + (j*2));
+           casilla = (Casilla)casillas.get(i);
+           str_casilla = dibujar_casilla(casilla);
+           ret += "<td>" + str_casilla + "</td></tr>"; 
 
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>			
-                </tr>
-                <tr>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>
-                        <td><table><tr><td colspan='3' style='border-bottom:1px solid'>Color CASILLA</td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>NombreCasilla<br>Precio</td></tr></table></td>					
-                </tr>						
-        </table>*/
-
+           j++;
+        }
+        ret += "<tr>";
+        for (int i = 10; i >= 0; i--) {
+            casilla = (Casilla)casillas.get(i);
+            str_casilla = dibujar_casilla(casilla);
+            ret += "<td>" + str_casilla + "</td>";
+        }
+        ret += "</tr></table>";
+        session.setAttribute("tablero", tablero);
+        return ret;
     }
 
+    private String dibujar_casilla(Casilla casilla) {
+        String ret = "<table width='100%' height='100%' id='" + casilla.getId() + "'><tr><td colspan='3' style='border-bottom:1px solid; background-color:#" + casilla.getColor() + "'><br></td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>" + casilla.getNombre() + "<br>" + casilla.getPrecio() + "</td></tr></table>";
+        return ret;
+    }
   
 
     
