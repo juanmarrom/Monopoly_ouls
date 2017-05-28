@@ -23,6 +23,7 @@ public class Jugador {
     private int billetes_de_50;
     private int billetes_de_100;
     private int billetes_de_500;
+    private int esta_en_casilla;
     
     
     public Jugador(int id, String nombre, String color) {
@@ -46,6 +47,7 @@ public class Jugador {
         this.billetes_de_100 = 4;
         this.billetes_de_500 = 2;
         this.casillas = new ArrayList();
+        this.esta_en_casilla = 0;
     }
 
     /**
@@ -200,6 +202,20 @@ public class Jugador {
      */
     public void setBilletes_de_500(int billetes_de_500) {
         this.billetes_de_500 = billetes_de_500;
+    }
+    
+   /**
+     * @return the billetes_de_500
+     */
+    public int getEsta_en_casilla() {
+        return this.esta_en_casilla % 40;
+    }
+
+    /**
+     * @param billetes_de_500 the billetes_de_500 to set
+     */
+    public void setEsta_en_casilla(int offset) {
+        this.esta_en_casilla = (this.esta_en_casilla + offset) % 40; /* 40 casillas: de 0 a 39*/
     }
     
 }

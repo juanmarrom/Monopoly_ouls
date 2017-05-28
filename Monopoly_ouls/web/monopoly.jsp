@@ -22,7 +22,7 @@
                       type: "post",
                       dataType: "html",
                       success: function(response) {
-                            alert(response);
+                            //alert(response);
                             $('#tablero').html(response);
                       }
                     });
@@ -33,11 +33,25 @@
                       type: "post",
                       dataType: "html",
                       success: function(response) {
-                            alert(response);
+                            //alert(response);
                             $('#menu').html(response);
                       }
                     });                                    
                 });
+                
+                function tirar_dado(turno, numero_jugadores) {
+                    var nombreVar = "tirar_dado";                    
+                    $.ajax({
+                      data: {"accion":nombreVar},
+                      url: "Monopoly_Servlet",
+                      type: "post",
+                      dataType: "html",
+                      success: function(response) {  
+                            $('#menu').html("");
+                            $('#menu').html(response);
+                      }
+                    });          
+                }
         </script>
 	   <style>
 		   * {

@@ -23,7 +23,7 @@ public class Parsear_tablero {
        /**
      * @param args the command line arguments
      */
-    public ArrayList parsear_xml_casillas() {
+    public ArrayList parsear_xml_casillas(String carpeta) {
         // TODO code application logic here
         File miDir = new File (".");
         ArrayList ret = new ArrayList();
@@ -40,7 +40,7 @@ public class Parsear_tablero {
                     
         try {	
             //File inputFile = new File(miDir.getCanonicalPath() + "\\src\\java\\Datos\\casillas.xml");
-            File inputFile = new File("C:\\Users\\User\\Documents\\NetBeansProjects\\Monopoly_ouls\\Monopoly_ouls\\src\\java\\Datos\\casillas.xml");
+            File inputFile = new File(carpeta + "\\casillas.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);

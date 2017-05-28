@@ -6,6 +6,7 @@
 package Servlets;
 
 import Contenedores.Casilla;
+import Contenedores.Dado;
 import Contenedores.Jugador;
 import Contenedores.Tablero;
 import java.io.IOException;
@@ -89,7 +90,10 @@ public class Monopoly_Servlet extends HttpServlet {
         
         System.out.println("TEST: '" + accion + "'");
         if (accion.compareToIgnoreCase("nueva") == 0) {
-            inicializar(request);
+            HttpSession session = request.getSession();
+            String carpeta = request.getParameter("carpeta");
+            session.setAttribute("carpeta", carpeta);             
+            inicializar(request, carpeta);
             String nombre1 = request.getParameter("nombre1");
             String color1 = request.getParameter("color1");
             String nombre2 = request.getParameter("nombre2");
@@ -127,44 +131,26 @@ public class Monopoly_Servlet extends HttpServlet {
             if (nombre7 != null && !nombre7.isEmpty()) {
                 Jugador jugador7 = new Jugador (7, nombre7, color7);
                 tablero.setJugadores(jugador7);
-            }
-            HttpSession session = request.getSession();
+            }                                  
             session.setAttribute("tablero", tablero);            
         }
         if (accion.compareToIgnoreCase("cargar") == 0) {
             //TO DO
-        }
-        System.out.println("TESTC: '" + accion.compareToIgnoreCase("inicializar") + "'");
+        }        
         if (accion.compareToIgnoreCase("inicializar") == 0) {
-            System.out.println("TEST5: '");
-            String pepe = get_tablero(request);
-            System.out.println("TEST2: '" + pepe + "'");
-            out.println(pepe);
+            String html = get_tablero(request);
+            out.println(html);
         }
 
         if (accion.compareToIgnoreCase("inicializar_jugadores") == 0) {
-            System.out.println("TEST5: '");
-            String pepe = get_jugadores(request);
-            System.out.println("TEST2: '" + pepe + "'");
-            out.println(pepe);
-        }
-                        
-        /*
-        String apellido = request.getParameter("apellido");
-        String edad = request.getParameter("edad");
-
-                String texto = accion + " " + apellido + " " + edad;
-
-
-
-        out.println("<table style= cellspacing='1' bgcolor='#0099cc'>");
-        out.println("<tr>");
-        out.println("<td style= rowspan='7' align='center' bgcolor='#f8f8f8'> NOMBRE </td>");			
-        out.println("<td style= rowspan='7' align='center' bgcolor='#f8f8f8'>APELLIDO</td>");
-        out.println("<td style= rowspan='7' align='center' bgcolor='#f8f8f8'>EDAD:" + texto + " </td>");
-        out.println("</tr>");
-        out.println("</table>"); 
-        */
+            String html = get_jugadores(request);
+            out.println(html);
+        }                      
+        if (accion.compareToIgnoreCase("tirar_dado") == 0) {
+            String html = tirar_dado(request);
+            out.println(html);
+        }                      
+        
     }
 
     /**
@@ -177,19 +163,16 @@ public class Monopoly_Servlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
     
-    public void inicializar(HttpServletRequest request) {
-        tablero = new Tablero();
-        System.out.println("Tablero SEVLET: C " + tablero.getCasillas().size());
+    public void inicializar(HttpServletRequest request, String carpeta) {
+        tablero = new Tablero(carpeta);
         HttpSession session = request.getSession();
         session.setAttribute("tablero", tablero);
     }
 
     public String get_tablero(HttpServletRequest request) {
-        System.out.println("TEST6: '");
         HttpSession session = request.getSession();
         Tablero tablero = (Tablero) session.getAttribute("tablero");
         ArrayList casillas = tablero.getCasillas();
-        System.out.println("TEST7: '");
         
         String ret = "<table border='1px black' style='border-collapse:collapse;'>";                    
         ret += "<tr>";
@@ -238,23 +221,138 @@ public class Monopoly_Servlet extends HttpServlet {
     }
   
     public String get_jugadores(HttpServletRequest request) {
-        System.out.println("TEST6: '");
         HttpSession session = request.getSession();
         Tablero tablero = (Tablero) session.getAttribute("tablero");
         ArrayList jugadores = tablero.getJugadores();
-        System.out.println("TEST7: '");
-        
-        String ret = "<table border='1px black' style='border-collapse:collapse;'>";                            
+        int numero_jugadores = jugadores.size();
+        String ret = "<table border='1px black' style='border-collapse:collapse; padding-left: 5px; padding-right: 5px;'>";                            
         for (int i = 0; i < jugadores.size(); i++) {
             ret += "<tr>";
+            int numero_jugador = i + 1;            
             Jugador jugador = (Jugador)jugadores.get(i);
-            String str_jugador = jugador.getNombre() + " " + jugador.getColor();
-            ret += "<td>" + str_jugador + "</td>";
+            String str_jugador = jugador.getNombre();            
+            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;</td>";
+            String color_jugador = jugador.getColor();
+            if (color_jugador.compareToIgnoreCase("azul") == 0) {
+                ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("amarillo") == 0) {
+                ret += "<td style=\"background-color:yellow\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("naranja") == 0) {
+                ret += "<td style=\"background-color:orange\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("verde") == 0) {
+                ret += "<td style=\"background-color:green\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("rojo") == 0) {
+                ret += "<td style=\"background-color:red\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("violeta") == 0) {
+                ret += "<td style=\"background-color:violet\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("negro") == 0) {
+                ret += "<td style=\"background-color:black\">&nbsp;&nbsp;</td>";
+            }
             ret += "</tr>";
         }
-        ret += "</table>";
+        ret += "</table><br><br><br><br>";
+        ret += "<table border='1px black' style='border-collapse:collapse; padding-left: 5px; padding-right: 5px;'>";                            
+        for (int i = 0; i < jugadores.size(); i++) {
+            int numero_jugador = i + 1;
+            ret += "<tr>";
+            Jugador jugador = (Jugador)jugadores.get(i);
+            String str_jugador = jugador.getNombre();
+            int str_casilla_jugador = jugador.getEsta_en_casilla();            
+            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + " está en casilla " + str_casilla_jugador + "&nbsp;&nbsp;</td>";
+            ret += "</tr>";
+        }
+        ret += "</table><br><br>";
+        ret += "<span>";
+        int turno = tablero.getTurno() + 1;
+        ret += "El turno lo tiene el jugador " + turno;
+        ret += "</span><br><br>";
+        ret += "<input type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
+        
         session.setAttribute("tablero", tablero);
         return ret;
     }
+    
+    public String tirar_dado(HttpServletRequest request) {
+        System.out.println ("Tirar DAdo");
+        int dado1 = Dado.tirar_dado();
+        int dado2 = Dado.tirar_dado();
+        HttpSession session = request.getSession();
+        Tablero tablero = (Tablero) session.getAttribute("tablero");
+        int turno_actual = tablero.getTurno() + 1;
+        int turno_actual_pos = tablero.getTurno();
+        tablero.setTurno();
+        int casilla_antes_de_tirar = ((Jugador)tablero.getJugadores().get(turno_actual_pos)).getEsta_en_casilla();
+        ((Jugador)tablero.getJugadores().get(turno_actual_pos)).setEsta_en_casilla(dado1 + dado2);
+        int casilla_despues_de_tirar = ((Jugador)tablero.getJugadores().get(turno_actual_pos)).getEsta_en_casilla();
+        ArrayList jugadores = tablero.getJugadores();
+        int numero_jugadores = jugadores.size();
+        String ret = "<table border='1px black' style='border-collapse:collapse; padding-left: 5px; padding-right: 5px;'>";                            
+        for (int i = 0; i < jugadores.size(); i++) {
+            ret += "<tr>";
+            int numero_jugador = i + 1;            
+            Jugador jugador = (Jugador)jugadores.get(i);
+            String str_jugador = jugador.getNombre();            
+            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;</td>";
+            String color_jugador = jugador.getColor();
+            if (color_jugador.compareToIgnoreCase("azul") == 0) {
+                ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("amarillo") == 0) {
+                ret += "<td style=\"background-color:yellow\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("naranja") == 0) {
+                ret += "<td style=\"background-color:orange\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("verde") == 0) {
+                ret += "<td style=\"background-color:green\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("rojo") == 0) {
+                ret += "<td style=\"background-color:red\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("violeta") == 0) {
+                ret += "<td style=\"background-color:violet\">&nbsp;&nbsp;</td>";
+            }
+            if (color_jugador.compareToIgnoreCase("negro") == 0) {
+                ret += "<td style=\"background-color:black\">&nbsp;&nbsp;</td>";
+            }
+            ret += "</tr>";
+        }
+        ret += "</table><br><br><br><br>";
+        ret += "<table border='1px black' style='border-collapse:collapse; padding-left: 5px; padding-right: 5px;'>";                            
+        for (int i = 0; i < jugadores.size(); i++) {
+            int numero_jugador = i + 1;
+            ret += "<tr>";
+            Jugador jugador = (Jugador)jugadores.get(i);
+            String str_jugador = jugador.getNombre();
+            int str_casilla_jugador = jugador.getEsta_en_casilla();            
+            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + " está en casilla " + str_casilla_jugador + "&nbsp;&nbsp;</td>";
+            ret += "</tr>";
+        }
+        ret += "</table><br><br>";
+
+        ret += "<span>";
         
+        ret += "El jugador " + turno_actual + " ha sacado:<br><b>Dado1: " + dado1 + "</b><br><b>Dado2: " + dado2 + "</b>";
+        int total = dado1 + dado2;
+        ret += "<br>En total avanza " + total + " casillas";
+        ret += "<br>Desde la casilla " + casilla_antes_de_tirar + " a la casilla " + casilla_despues_de_tirar;
+        ret += "</span><br><br>";        
+        
+        
+        ret += "<span>";
+        int turno = tablero.getTurno() + 1;
+        ret += "El turno lo tiene el jugador " + turno;
+        ret += "</span><br><br>";
+        ret += "<input type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
+        
+        session.setAttribute("tablero", tablero);
+        return ret;
+    }            
+    
 }

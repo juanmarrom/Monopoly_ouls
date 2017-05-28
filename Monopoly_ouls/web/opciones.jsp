@@ -42,10 +42,14 @@
                     document.getElementById("id_numero_jugadores").style.display = "none";
                     document.getElementById("id_seleccion").style.display = "none";                        
                     document.getElementById("id_seleccion_jugadores").style.display = "inline";
-                    document.getElementById("id_nombre_jugadores").style.display = "inline";                        
+                    document.getElementById("id_nombre_jugadores").style.display = "inline";   
+                    document.getElementById("id_carpeta").style.display = "inline";   
+                    document.getElementById("id_carpeta_text").style.display = "inline";   
+                    
+                    
                     
                     for (var i = 1; i <= 7; i++) {
-                        console.log(i);
+                        //console.log(i);
                         var input_id = "id_jugador_" + i + "_tr";
                         if (i > valor) {
                             document.getElementById(input_id).style.display = "none";
@@ -95,9 +99,14 @@
                         }
                     }
                    }
+                   var carpeta = document.getElementById("id_carpeta").value;
+                   if (carpeta == null || carpeta == "") {
+                       alert("No hay ruta de ficheros configuración");        
+                   }
+                   
                    var accion = "nueva";
                    $.ajax({
-                        data: {"accion":accion,"nombre1":nombre1,"color1":color1,"nombre2":nombre2,"color2":color2,"nombre3":nombre3,"color3":color3,"nombre4":nombre4,"color4":color4,"nombre5":nombre5,"color5":color5,"nombre6":nombre6,"color6":color6,"nombre7":nombre7,"color7":color7},
+                        data: {"carpeta":carpeta,"accion":accion,"nombre1":nombre1,"color1":color1,"nombre2":nombre2,"color2":color2,"nombre3":nombre3,"color3":color3,"nombre4":nombre4,"color4":color4,"nombre5":nombre5,"color5":color5,"nombre6":nombre6,"color6":color6,"nombre7":nombre7,"color7":color7},
                         url: "Monopoly_Servlet",
                         type: "post",
                         dataType: "html",
@@ -295,6 +304,9 @@
             </table>
             <br>
             <br>
+            <span id="id_carpeta_text"  style="display:none;">Introduzca ruta de ficheros de configuración:<span>&nbsp;<input id="id_carpeta" type="text" style="display:none; width: 300px;">
+            <br>
+            <br><br>
             <input id="id_aceptar" type="button" value="Aceptar" style="display:none; width: 100px;" onclick="crear_partida()">
         </center>
     </body>
