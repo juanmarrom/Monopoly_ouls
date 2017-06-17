@@ -30,6 +30,9 @@ public class Casilla {
     private int precio_casa;
     private int precio_hotel;
     private int pertenece_a_jugador;
+    private int numero_casas;
+    private int numero_hoteles;
+    private int tengo_grupo;
         
     public Casilla(int id,String nombre,int es_comprable,int precio,String color,int grupo,int total_grupo,int tipo,int alquiler,int alquiler_1,int alquiler_2,int alquiler_3,int alquiler_4,int alquiler_hotel,int hipoteca,int precio_casa,int precio_hotel) {
         this.id = id;
@@ -50,6 +53,9 @@ public class Casilla {
         this.precio_casa = precio_casa;
         this.precio_hotel = precio_hotel;
         this.pertenece_a_jugador = -1;
+        this.numero_casas = 0;
+        this.numero_hoteles = 0;
+        this.tengo_grupo = 0;        
     }            
 
     /**
@@ -183,6 +189,48 @@ public class Casilla {
      */
     public void setPertenece_a_jugador(int pertenece_a_jugador) {
         this.pertenece_a_jugador = pertenece_a_jugador;
+    }
+
+    /**
+     * @return the numero_casas
+     */
+    public int getNumero_casas() {
+        return numero_casas;
+    }
+
+    /**
+     * @param numero_casas the numero_casas to set
+     */
+    public void setNumero_casas(int numero_casas) {
+        this.numero_casas = numero_casas;
+    }
+
+    /**
+     * @return the numero_hoteles
+     */
+    public int getNumero_hoteles() {
+        return numero_hoteles;
+    }
+
+    /**
+     * @param numero_hoteles the numero_hoteles to set
+     */
+    public void setNumero_hoteles(int numero_hoteles) {
+        this.numero_hoteles = numero_hoteles;
+    }
+
+    /**
+     * @return the tengo_grupo
+     */
+    public int getTengo_grupo() {
+        return tengo_grupo;
+    }
+
+    /**
+     * @param tengo_grupo the tengo_grupo to set
+     */
+    public void setTengo_grupo(int tengo_grupo) {
+        this.tengo_grupo = tengo_grupo;
     }
                 
 }

@@ -11,6 +11,7 @@ import Contenedores.Jugador;
 import Contenedores.Tablero;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -195,7 +196,7 @@ public class Monopoly_Servlet extends HttpServlet {
         str_casilla = dibujar_casilla(casilla);
         ret += "<td>" + str_casilla + "</td></tr>";
         
-        int j = 0;
+        int j = 1;
         for (int i = 18; i >= 11; i--) {
            
            casilla = (Casilla)casillas.get(i);
@@ -203,7 +204,7 @@ public class Monopoly_Servlet extends HttpServlet {
            ret += "<tr><td>" + str_casilla + "</td>"; 
 
            int k = i + (12 + (j*2));
-           casilla = (Casilla)casillas.get(i);
+           casilla = (Casilla)casillas.get(k);
            str_casilla = dibujar_casilla(casilla);
            ret += "<td>" + str_casilla + "</td></tr>"; 
 
@@ -240,8 +241,9 @@ public class Monopoly_Servlet extends HttpServlet {
             ret += "<tr>";
             int numero_jugador = i + 1;            
             Jugador jugador = (Jugador)jugadores.get(i);
-            String str_jugador = jugador.getNombre();            
-            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;</td>";
+            String str_jugador = jugador.getNombre();
+            int dinero = jugador.getDineroTotal();
+            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
             String color_jugador = jugador.getColor();
             if (color_jugador.compareToIgnoreCase("azul") == 0) {
                 ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
@@ -292,23 +294,72 @@ public class Monopoly_Servlet extends HttpServlet {
         System.out.println ("Tirar DAdo");
         int dado1 = Dado.tirar_dado();
         int dado2 = Dado.tirar_dado();
+                
+        int salio_doble = 0;
+        if (dado1 == dado2) {//saca doble, se mantiene el turno
+            salio_doble = 1;
+        }
         HttpSession session = request.getSession();
         Tablero tablero = (Tablero) session.getAttribute("tablero");
         int turno_actual = tablero.getTurno() + 1;
         int turno_actual_pos = tablero.getTurno();
         tablero.setTurno();
+        ArrayList jugadores = tablero.getJugadores();
+        int numero_jugadores = jugadores.size();  
         int casilla_antes_de_tirar = ((Jugador)tablero.getJugadores().get(turno_actual_pos)).getEsta_en_casilla();
+        Jugador jugador_actual = ((Jugador)tablero.getJugadores().get(turno_actual_pos));
+        if (casilla_antes_de_tirar == 10) {//esta en la carcel)
+            jugador_actual.setTurnos_en_la_carcel(jugador_actual.getTurnos_en_la_carcel() + 1);
+            if (jugador_actual.getTurnos_en_la_carcel() > 3) {//sale de la carcel, asi que no se hace nada
+                jugador_actual.setTurnos_en_la_carcel(0);
+                jugador_actual.setVeces_salio_doble(salio_doble);
+            }
+            else {
+                if (salio_doble == 1) {// sale de la carcel
+                    jugador_actual.setTurnos_en_la_carcel(0);
+                    jugador_actual.setVeces_salio_doble(0);                    
+                }
+                else {
+                    String ret = "<span>El jugador " + turno_actual + " ha sacado:<br><b>Dado1: " + dado1 + "</b><br><b>Dado2: " + dado2 + "</span></b>";
+                    ret += "<br><br><span id='id_turno_jugador' style=''>";
+                    int turno = tablero.getTurno() + 1;
+                    ret += "Sigue en la carcel...El turno lo tiene el jugador " + turno;
+                    ret += "</span><br><br>";
+                    ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
+                    return ret;
+                }
+            }
+        }
+        
         ((Jugador)tablero.getJugadores().get(turno_actual_pos)).setEsta_en_casilla(dado1 + dado2);
         int casilla_despues_de_tirar = ((Jugador)tablero.getJugadores().get(turno_actual_pos)).getEsta_en_casilla();
-        ArrayList jugadores = tablero.getJugadores();
-        int numero_jugadores = jugadores.size();
+        
+        if (salio_doble == 1) {
+            jugador_actual.setVeces_salio_doble(jugador_actual.getVeces_salio_doble() + 1);
+            if (jugador_actual.getVeces_salio_doble() >= 3) {
+                casilla_despues_de_tirar = 10; //a la carcel
+                int estoy_en = jugador_actual.getEsta_en_casilla();
+                int offset = abs(estoy_en - 10);
+                jugador_actual.setEsta_en_casilla(offset);
+            }
+            else {
+                if (casilla_despues_de_tirar != 10 && casilla_despues_de_tirar != 30) {//si no cae en la carcel
+                    tablero.setTurnoAtras();
+                }                
+            }
+        }
+        else {
+            jugador_actual.setVeces_salio_doble(0);
+        }
+                                     
         String ret = "<table border='1px black' style='border-collapse:collapse; padding-left: 5px; padding-right: 5px;'>";                            
         for (int i = 0; i < jugadores.size(); i++) {
             ret += "<tr>";
             int numero_jugador = i + 1;            
             Jugador jugador = (Jugador)jugadores.get(i);
             String str_jugador = jugador.getNombre();            
-            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;</td>";
+            int dinero = jugador.getDineroTotal();
+            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
             String color_jugador = jugador.getColor();
             if (color_jugador.compareToIgnoreCase("azul") == 0) {
                 ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
@@ -340,8 +391,12 @@ public class Monopoly_Servlet extends HttpServlet {
             ret += "<tr>";
             Jugador jugador = (Jugador)jugadores.get(i);
             String str_jugador = jugador.getNombre();
-            int str_casilla_jugador = jugador.getEsta_en_casilla();            
-            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + " está en casilla " + str_casilla_jugador + "&nbsp;&nbsp;</td>";
+            int str_casilla_jugador = jugador.getEsta_en_casilla();
+            if (str_casilla_jugador == 30) {//ir a la carcel
+                str_casilla_jugador = 10;
+            }
+            Casilla datos_casilla = ((Casilla)tablero.getCasillas().get(str_casilla_jugador));
+            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + " está en casilla " + datos_casilla.getNombre() + "(" + str_casilla_jugador + ")&nbsp;&nbsp;</td>";
             ret += "</tr>";
         }
         ret += "</table><br><br>";
@@ -355,16 +410,17 @@ public class Monopoly_Servlet extends HttpServlet {
         ret += "</span><br><br>";        
         
         
-        ret += tablero.analizar_jugada(turno_actual_pos, casilla_despues_de_tirar);
+        ret += tablero.analizar_jugada(turno_actual_pos, casilla_despues_de_tirar, salio_doble);
         
         
-        ret += "<br><br><span id='id_turno_jugador' style='display:none;'>";
+        /*ret += "<br><br><span id='id_turno_jugador' style='display:none;'>";
         int turno = tablero.getTurno() + 1;
         ret += "El turno lo tiene el jugador " + turno;
         ret += "</span><br><br>";
         ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px; display:none;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
-        
+        */
         session.setAttribute("tablero", tablero);
+        probar_estado_partida(tablero);
         return ret;
     }  
     
@@ -375,4 +431,28 @@ public class Monopoly_Servlet extends HttpServlet {
         session.setAttribute("tablero", tablero);
         return "";
     }
+    
+    private String probar_estado_partida(Tablero tablero) {
+        ArrayList jugadores = tablero.getJugadores();
+        int jugadores_eliminado = 0;
+        int jugadores_activos = 0;
+        for (int i = 0; i < jugadores.size(); i++) {                        
+            Jugador jugador = (Jugador)jugadores.get(i);
+            int dinero = jugador.getDineroTotal();
+            if (dinero < 0) {
+                jugador.setEliminado(1);
+                jugadores_eliminado++;
+            }
+            else {
+                jugadores_activos++;
+            }
+        }
+        if (jugadores_activos == 1) {//FIN
+            return "";
+        }
+        else {
+            return "";
+        }
+    }
+    
 }

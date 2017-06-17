@@ -25,6 +25,10 @@ public class Jugador {
     private int billetes_de_500;
     private int esta_en_casilla;
     private int dineroTotal;
+    private int esta_en_la_carcel;
+    private int turnos_en_la_carcel;
+    private int veces_salio_doble;
+    private int eliminado;
     
     
     public Jugador(int id, String nombre, String color) {
@@ -51,6 +55,10 @@ public class Jugador {
         this.casillas = new ArrayList();
         this.esta_en_casilla = 0;
         this.dineroTotal = 1000 + 20 + 400 + 5 + 50 + 5 + 20;
+        this.turnos_en_la_carcel = 0;
+        this.esta_en_la_carcel = 0;
+        this.veces_salio_doble = 0;
+        this.eliminado = 0;
     }
     
     public int getDineroTotal() {
@@ -228,6 +236,62 @@ public class Jugador {
      */
     public void setEsta_en_casilla(int offset) {
         this.esta_en_casilla = (this.esta_en_casilla + offset) % 40; /* 40 casillas: de 0 a 39*/
+    }
+
+    /**
+     * @return the turnos_en_la_carcel
+     */
+    public int getTurnos_en_la_carcel() {
+        return turnos_en_la_carcel;
+    }
+
+    /**
+     * @param turnos_en_la_carcel the turnos_en_la_carcel to set
+     */
+    public void setTurnos_en_la_carcel(int turnos_en_la_carcel) {
+        this.turnos_en_la_carcel = turnos_en_la_carcel;
+    }
+
+    /**
+     * @return the veces_salio_doble
+     */
+    public int getVeces_salio_doble() {
+        return veces_salio_doble;
+    }
+
+    /**
+     * @param veces_salio_doble the veces_salio_doble to set
+     */
+    public void setVeces_salio_doble(int veces_salio_doble) {
+        this.veces_salio_doble = veces_salio_doble;
+    }
+
+    /**
+     * @return the eliminado
+     */
+    public int getEliminado() {
+        return eliminado;
+    }
+
+    /**
+     * @param eliminado the eliminado to set
+     */
+    public void setEliminado(int eliminado) {
+        this.eliminado = eliminado;
+    }
+
+    /**
+     * @return the esta_en_la_carcel
+     */
+    public int getEsta_en_la_carcel() {
+        return esta_en_la_carcel;
+    }
+
+    /**
+     * @param esta_en_la_carcel the esta_en_la_carcel to set
+     */
+    public void setEsta_en_la_carcel(int esta_en_la_carcel) {
+        this.esta_en_la_carcel = esta_en_la_carcel;
     }
     
 }

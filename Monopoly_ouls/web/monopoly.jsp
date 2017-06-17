@@ -63,6 +63,8 @@
                       success: function(response) {  
                             document.getElementById("id_turno_jugador").style.display = "inline";      
                             document.getElementById("id_boton_turno_jugador").style.display = "inline";
+                            document.getElementById("id_si").style.display = "none";
+                            document.getElementById("id_no").style.display = "none";
                       }
                     });          
                 }
@@ -70,9 +72,33 @@
                 function pasar() {
                     document.getElementById("id_turno_jugador").style.display = "inline";      
                     document.getElementById("id_boton_turno_jugador").style.display = "inline";      
-                   //id_turno_jugador
-                   //id_boton_turno_jugador
+                    document.getElementById("id_si").style.display = "none";
+                    document.getElementById("id_no").style.display = "none";
                 }
+
+                function construir(turno_actual, casilla_actual) {
+                    var nombreVar = "construir";                    
+                    /*$.ajax({
+                      data: {"accion":nombreVar,"turno_actual":turno_actual,"casilla_actual":casilla_actual},
+                      url: "Monopoly_Servlet",
+                      type: "post",
+                      dataType: "html",
+                      success: function(response) {  
+                            document.getElementById("id_turno_jugador").style.display = "inline";      
+                            document.getElementById("id_boton_turno_jugador").style.display = "inline";
+                            document.getElementById("id_const").style.display = "none";
+                      }
+                    });*/
+                    document.getElementById("id_turno_jugador").style.display = "inline";      
+                    document.getElementById("id_boton_turno_jugador").style.display = "inline";
+                    document.getElementById("id_const").style.display = "none";
+                    var casas = document.getElementById("id_casas").value;
+                    var hoteles = document.getElementById("id_hoteles").value;
+                    alert("Casas " + casas + " hoteles " + hoteles);
+
+                }
+
+
 
                 
         </script>
