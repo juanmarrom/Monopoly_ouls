@@ -52,6 +52,29 @@
                       }
                     });          
                 }
+                
+                function comprar(turno_actual, casilla_actual) {
+                    var nombreVar = "comprar";                    
+                    $.ajax({
+                      data: {"accion":nombreVar,"turno_actual":turno_actual,"casilla_actual":casilla_actual},
+                      url: "Monopoly_Servlet",
+                      type: "post",
+                      dataType: "html",
+                      success: function(response) {  
+                            document.getElementById("id_turno_jugador").style.display = "inline";      
+                            document.getElementById("id_boton_turno_jugador").style.display = "inline";
+                      }
+                    });          
+                }
+
+                function pasar() {
+                    document.getElementById("id_turno_jugador").style.display = "inline";      
+                    document.getElementById("id_boton_turno_jugador").style.display = "inline";      
+                   //id_turno_jugador
+                   //id_boton_turno_jugador
+                }
+
+                
         </script>
 	   <style>
 		   * {

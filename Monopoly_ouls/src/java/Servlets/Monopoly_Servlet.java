@@ -150,7 +150,12 @@ public class Monopoly_Servlet extends HttpServlet {
             String html = tirar_dado(request);
             out.println(html);
         }                      
-        
+       if (accion.compareToIgnoreCase("comprar") == 0) {         
+            HttpSession session = request.getSession();
+            String turno_actual = request.getParameter("turno_actual");
+            String casilla_actual = request.getParameter("casilla_actual");
+            comprar(Integer.parseInt(turno_actual), Integer.parseInt(casilla_actual), request);
+        }                        
     }
 
     /**
@@ -216,7 +221,12 @@ public class Monopoly_Servlet extends HttpServlet {
     }
 
     private String dibujar_casilla(Casilla casilla) {
-        String ret = "<table width='100%' height='100%' id='" + casilla.getId() + "'><tr><td colspan='3' style='border-bottom:1px solid; background-color:#" + casilla.getColor() + "'><br></td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>" + casilla.getNombre() + "<br>" + casilla.getPrecio() + "</td></tr></table>";
+        int precio = casilla.getPrecio();
+        String precio_casilla = precio + "";
+        if (precio == 0) {
+            precio_casilla = "";
+        }
+        String ret = "<table width='100%' height='100%' id='" + casilla.getId() + "'><tr><td colspan='3' style='border-bottom:1px solid; background-color:#" + casilla.getColor() + "'><br></td></tr><tr><td colspan='3' rowspan='10' align='center' style='vertical-align:middle'>" + casilla.getNombre() + "<br>" + precio_casilla + "</td></tr></table>";
         return ret;
     }
   
@@ -345,14 +355,24 @@ public class Monopoly_Servlet extends HttpServlet {
         ret += "</span><br><br>";        
         
         
-        ret += "<span>";
+        ret += tablero.analizar_jugada(turno_actual_pos, casilla_despues_de_tirar);
+        
+        
+        ret += "<br><br><span id='id_turno_jugador' style='display:none;'>";
         int turno = tablero.getTurno() + 1;
         ret += "El turno lo tiene el jugador " + turno;
         ret += "</span><br><br>";
-        ret += "<input type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
+        ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px; display:none;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
         
         session.setAttribute("tablero", tablero);
         return ret;
-    }            
+    }  
     
+    private String comprar(int turno_actual, int casilla_actual, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Tablero tablero = (Tablero) session.getAttribute("tablero");   
+        tablero.comprar(turno_actual, casilla_actual);
+        session.setAttribute("tablero", tablero);
+        return "";
+    }
 }

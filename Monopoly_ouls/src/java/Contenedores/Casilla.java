@@ -29,6 +29,7 @@ public class Casilla {
     private int hipoteca;
     private int precio_casa;
     private int precio_hotel;
+    private int pertenece_a_jugador;
         
     public Casilla(int id,String nombre,int es_comprable,int precio,String color,int grupo,int total_grupo,int tipo,int alquiler,int alquiler_1,int alquiler_2,int alquiler_3,int alquiler_4,int alquiler_hotel,int hipoteca,int precio_casa,int precio_hotel) {
         this.id = id;
@@ -48,6 +49,7 @@ public class Casilla {
         this.hipoteca = hipoteca;
         this.precio_casa = precio_casa;
         this.precio_hotel = precio_hotel;
+        this.pertenece_a_jugador = -1;
     }            
 
     /**
@@ -167,6 +169,20 @@ public class Casilla {
      */
     public int getPrecio_hotel() {
         return precio_hotel;
+    }
+
+    /**
+     * @return the pertenece_a_jugador
+     */
+    public int getPertenece_a_jugador() {
+        return pertenece_a_jugador;
+    }
+
+    /**
+     * @param pertenece_a_jugador the pertenece_a_jugador to set
+     */
+    public void setPertenece_a_jugador(int pertenece_a_jugador) {
+        this.pertenece_a_jugador = pertenece_a_jugador;
     }
                 
 }

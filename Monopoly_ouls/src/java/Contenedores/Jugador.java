@@ -24,6 +24,7 @@ public class Jugador {
     private int billetes_de_100;
     private int billetes_de_500;
     private int esta_en_casilla;
+    private int dineroTotal;
     
     
     public Jugador(int id, String nombre, String color) {
@@ -35,6 +36,7 @@ public class Jugador {
         1 de 50 
         5 de 1 
         y 1 de 20
+        Total = 1000 + 20 + 400 + 5 + 50 + 5 + 20
         */
         this.id = id;
         this.nombre = nombre;
@@ -48,8 +50,18 @@ public class Jugador {
         this.billetes_de_500 = 2;
         this.casillas = new ArrayList();
         this.esta_en_casilla = 0;
+        this.dineroTotal = 1000 + 20 + 400 + 5 + 50 + 5 + 20;
+    }
+    
+    public int getDineroTotal() {
+        return this.dineroTotal;
     }
 
+    public void setDineroTotal(int dineroTotal) {
+        this.dineroTotal = dineroTotal;
+    }
+
+    
     /**
      * @return the id
      */

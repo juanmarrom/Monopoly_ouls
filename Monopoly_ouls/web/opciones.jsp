@@ -304,7 +304,7 @@
             </table>
             <br>
             <br>
-            <span id="id_carpeta_text"  style="display:none;">Introduzca ruta de ficheros de configuración:<span>&nbsp;<input id="id_carpeta" type="text" style="display:none; width: 300px;">
+            <span id="id_carpeta_text"  style="display:none;">Introduzca ruta de ficheros de configuración:<span>&nbsp;<input id="id_carpeta" type="text" style="display:none; width: 300px;" value="C:\Users\User\Desktop\conf_monopoly">
             <br>
             <br><br>
             <input id="id_aceptar" type="button" value="Aceptar" style="display:none; width: 100px;" onclick="crear_partida()">
