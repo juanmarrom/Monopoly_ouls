@@ -244,7 +244,7 @@ public class Monopoly_Servlet extends HttpServlet {
             String str_jugador = jugador.getNombre();
             int dinero = jugador.getDineroTotal();
             
-            ret += "<td onclick='window.open(\"jugador.jsp?id=" + i + "\",\"miventana\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
+            ret += "<td style=\"cursor: pointer\" onclick='window.open(\"jugador.jsp?id=" + (i + 1) + "\",\"miventana\",\"width=600,height=600,menubar=no\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
             String color_jugador = jugador.getColor();
             if (color_jugador.compareToIgnoreCase("azul") == 0) {
                 ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
@@ -360,7 +360,7 @@ public class Monopoly_Servlet extends HttpServlet {
             Jugador jugador = (Jugador)jugadores.get(i);
             String str_jugador = jugador.getNombre();            
             int dinero = jugador.getDineroTotal();
-            ret += "<td>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
+            ret += "<td style=\"cursor: pointer\" onclick='window.open(\"jugador.jsp?id=" + (i + 1) + "\",\"miventana\",\"width=600,height=600,menubar=no\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
             String color_jugador = jugador.getColor();
             if (color_jugador.compareToIgnoreCase("azul") == 0) {
                 ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
