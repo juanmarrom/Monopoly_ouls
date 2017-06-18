@@ -292,7 +292,7 @@ public class Monopoly_Servlet extends HttpServlet {
         int turno = tablero.getTurno() + 1;
         ret += "El turno lo tiene el jugador " + turno;
         ret += "</span><br><br>";
-        ret += "<input type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
+        ret += "<input type='button' value='Tirar Dado jugador " + turno + "' style='width: 200px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
         
         session.setAttribute("tablero", tablero);
         return ret;
@@ -333,14 +333,14 @@ public class Monopoly_Servlet extends HttpServlet {
                     int turno = tablero.getTurno() + 1;
                     ret += "Sigue en la carcel...El turno lo tiene el jugador " + turno;
                     ret += "</span><br><br>";
-                    ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
+                    ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado jugador " + turno + "' style='width: 200px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
                     return ret;
                 }
             }
         }
         String ret = "";
         if ( (((Jugador)tablero.getJugadores().get(turno_actual_pos)).getEsta_en_casilla() + dado1 + dado2) >= 40) {// se ha pasado por la casilla de salida
-            //jugador_actual.setDineroTotal(jugador_actual.getDineroTotal() + 200); //200 mas
+            jugador_actual.setDineroTotal(jugador_actual.getDineroTotal() + 200); //200 mas
             ret += "<span><b>El jugador " + turno_actual + " ha pasado por la salida (ingresa 200)</b><br></span>";
         }
         
@@ -437,7 +437,7 @@ public class Monopoly_Servlet extends HttpServlet {
         int turno = tablero.getTurno() + 1;
         ret += "El turno lo tiene el jugador " + turno;
         ret += "</span><br><br>";
-        ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px; display:none;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
+        ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado jugador " + turno + "' style='width: 200px; display:none;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
         */
         session.setAttribute("tablero", tablero);
         String fin = probar_estado_partida(tablero);
