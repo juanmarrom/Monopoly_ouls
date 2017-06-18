@@ -22,6 +22,7 @@ public class Tablero implements Serializable {
     private int turno;
     private int turno_tarjeta_suerte;
     private int turno_tarjeta_comunidad;
+    private String carpeta;
     
     public Tablero(String carpeta) {
         Parsear_tablero parser = new Parsear_tablero();
@@ -32,6 +33,7 @@ public class Tablero implements Serializable {
         this.turno = 0;
         this.turno_tarjeta_suerte = 0;
         this.turno_tarjeta_comunidad = 0;
+        this.carpeta = carpeta;
         crear_tarjetas();
     }
 
@@ -439,8 +441,7 @@ public class Tablero implements Serializable {
                         ret += "<span>";                
                         ret += "Dispone de " + jugador.getDineroTotal();
                         ret += "</span><br><br>";                                
-                    }
-               
+                    }               
                     if (this.turno_tarjeta_comunidad == 5) {
                         ret += "<span>";                
                         ret += "Dispone de " + jugador.getDineroTotal();
@@ -456,13 +457,15 @@ public class Tablero implements Serializable {
                     if (this.turno_tarjeta_comunidad == 10) {// A la carcel
                         ret += "<span>";                
                         ret += "A la carcel!!!!";
-                        ret += "</span><br><br>";   
+                        ret += "</span><br><br>"; 
+                        if (jugador.getVeces_salio_doble() != 0) {
+                            setTurno();
+                        }
                         jugador.setVeces_salio_doble(0);
                         jugador.setEsta_en_la_carcel(1);
                         jugador.setEsta_en_casilla(40 - jugador.getEsta_en_casilla() + 10); //casilla de la carcel, se le pasa el offset                
                     }                                       
                     this.turno_tarjeta_comunidad = (this.turno_tarjeta_comunidad + 1) % this.tarjetas_comunidad.size();  
-
                 }
                 //suerte 7, 22, 36
                 if (casilla_actual == 7 || casilla_actual == 22 || casilla_actual == 36) {
@@ -503,6 +506,9 @@ public class Tablero implements Serializable {
                         ret += "<span>";                
                         ret += "A la carcel!!!!";
                         ret += "</span><br><br>";   
+                        if (jugador.getVeces_salio_doble() != 0) {
+                            setTurno();
+                        }
                         jugador.setVeces_salio_doble(0);
                         jugador.setEsta_en_la_carcel(1);
                         jugador.setEsta_en_casilla(40 - jugador.getEsta_en_casilla() + 10); //casilla de la carcel, se le pasa el offset                
@@ -516,8 +522,6 @@ public class Tablero implements Serializable {
                         ret += "<span>";                
                         ret += "A la calle!!!!";
                         ret += "</span><br><br>";   
-                        jugador.setVeces_salio_doble(0);
-                        jugador.setEsta_en_la_carcel(1);
                         jugador.setEsta_en_casilla(40 - jugador.getEsta_en_casilla() + 11); //casilla de la calle, se le pasa el offset                                    
                     }
                     this.turno_tarjeta_suerte = (this.turno_tarjeta_suerte + 1) % this.tarjetas_suerte.size();                      
@@ -604,8 +608,9 @@ public class Tablero implements Serializable {
                     }
                     
                     if (encontradas == numero_casillas_grupo) {
+                    //if (1 == 1) {
                         int num_casas = datos_casilla.getNumero_casas();
-                        int num_hoteles = datos_casilla.getNumero_casas();
+                        int num_hoteles = datos_casilla.getNumero_hoteles();
                         int precio_casa = datos_casilla.getPrecio_casa();
                         int precio_hotel = datos_casilla.getPrecio_hotel();
                         if (num_casas < 4) {
@@ -622,9 +627,9 @@ public class Tablero implements Serializable {
                             }
                             ret += "</select><br><br>"; 
                         }
-                        if (num_hoteles == 0) {
+                        if (num_hoteles == 0 && num_casas == 4) {
                             ret += "<span>";                
-                            ret += "Se puede edificar hotel por:" + precio_casa;
+                            ret += "Se puede edificar hotel por:" + precio_hotel;
                             ret += "</span><br>";                                
                             ret += "Número hoteles a edificar:<select id='id_hoteles'>"; 
                             ret += "<option value=" + 0 +">" + 0 + "</option>"; 
@@ -834,6 +839,33 @@ public class Tablero implements Serializable {
         datos_casilla.setPertenece_a_jugador(turno_actual);        
     }   
     
+    
+    public String construir(int turno_actual, int casilla_actual, int casas, int hoteles) {       
+        System.out.println ("construir");
+        String ret = "";
+        Jugador jugador = (Jugador)jugadores.get(turno_actual);
+        Casilla datos_casilla = ((Casilla)casillas.get(casilla_actual));
+        int precio_casa = datos_casilla.getPrecio_casa();
+        int precio_hotel = datos_casilla.getPrecio_hotel();
+        int total = jugador.getDineroTotal();
+        datos_casilla.setNumero_casas(datos_casilla.getNumero_casas()+ casas);
+        datos_casilla.setNumero_hoteles(datos_casilla.getNumero_hoteles()+ hoteles);
+        
+        if (total - (precio_casa * casas) - (precio_hotel * hoteles) > 0) {        
+            jugador.setDineroTotal(jugador.getDineroTotal() - (precio_casa * casas));
+            jugador.setDineroTotal(jugador.getDineroTotal() - (precio_hotel * hoteles));
+            ret += "<span>";                
+            ret += "Se han constriudo " + casas + " casas y " + hoteles + " hoteles";
+            ret += "</span><br>";                                     
+        }
+        else {
+            ret += "<span>";                
+            ret += "Ho hay dinero";
+            ret += "</span><br>";                                                 
+        }
+        return ret;
+    }    
+    
     public void limpiar_casillas_eliminado(int indice_array_jugador) {
         Jugador jugador = (Jugador)jugadores.get(indice_array_jugador);
         int id_jugador_eliminado = jugador.getId();
@@ -847,6 +879,20 @@ public class Tablero implements Serializable {
                 casilla.setTengo_grupo(0);
             }                            
         }        
+    }
+
+    /**
+     * @return the carpeta
+     */
+    public String getCarpeta() {
+        return carpeta;
+    }
+
+    /**
+     * @param carpeta the carpeta to set
+     */
+    public void setCarpeta(String carpeta) {
+        this.carpeta = carpeta;
     }
     
 }

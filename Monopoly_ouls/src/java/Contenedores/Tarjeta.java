@@ -5,11 +5,13 @@
  */
 package Contenedores;
 
+import java.io.Serializable;
+
 /**
  *
  * @author User
  */
-public class Tarjeta {
+public class Tarjeta implements Serializable {
     private int id; //tipo 0 suerte, tipo 1 comunidad
     private int tipo; //tipo 0 suerte, tipo 1 comunidad
     private String texto; //

@@ -5,13 +5,14 @@
  */
 package Contenedores;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author User
  */
-public class Jugador {
+public class Jugador implements Serializable {
     private int id;
     private String nombre;
     private String color;

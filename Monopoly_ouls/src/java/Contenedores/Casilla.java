@@ -5,13 +5,14 @@
  */
 package Contenedores;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author User
  */
-public class Casilla {
+public class Casilla implements Serializable {
     private int id;
     private String nombre;
     private int es_comprable;

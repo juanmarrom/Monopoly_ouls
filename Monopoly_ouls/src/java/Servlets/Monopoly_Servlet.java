@@ -9,10 +9,16 @@ import Contenedores.Casilla;
 import Contenedores.Dado;
 import Contenedores.Jugador;
 import Contenedores.Tablero;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +42,7 @@ public class Monopoly_Servlet extends HttpServlet {
      * 
      */
     
-    Tablero tablero;
+    Tablero tablero = null;
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -136,8 +142,20 @@ public class Monopoly_Servlet extends HttpServlet {
             session.setAttribute("tablero", tablero);            
         }
         if (accion.compareToIgnoreCase("cargar") == 0) {
-            //TO DO
+            HttpSession session = request.getSession();
+            String nombre_fichero = (String)session.getAttribute("fichero");
+            String nombre_carpeta = (String)session.getAttribute("carpeta");
+            System.out.println("nombre_fichero: '" + nombre_fichero + "'");
+            System.out.println("nombre_carpeta: '" + nombre_carpeta + "'");
+            
+            String html = cargar(nombre_carpeta,nombre_fichero, request);
+            out.println(html);
         }        
+        if (accion.compareToIgnoreCase("guardar") == 0) {
+            String nombre_fichero = request.getParameter("nombre_guardar");
+            guardar(request, nombre_fichero);
+        }        
+        
         if (accion.compareToIgnoreCase("inicializar") == 0) {
             String html = get_tablero(request);
             out.println(html);
@@ -157,6 +175,17 @@ public class Monopoly_Servlet extends HttpServlet {
             String casilla_actual = request.getParameter("casilla_actual");
             comprar(Integer.parseInt(turno_actual), Integer.parseInt(casilla_actual), request);
         }                        
+       if (accion.compareToIgnoreCase("construir") == 0) {         
+            HttpSession session = request.getSession();
+            String turno_actual = request.getParameter("turno_actual");
+            String casilla_actual = request.getParameter("casilla_actual");
+            String casas = request.getParameter("casas");
+            String hoteles = request.getParameter("hoteles");            
+            construir(Integer.parseInt(turno_actual), Integer.parseInt(casilla_actual), Integer.parseInt(casas), Integer.parseInt(hoteles), request);
+        }                        
+       
+       
+       
     }
 
     /**
@@ -454,6 +483,18 @@ public class Monopoly_Servlet extends HttpServlet {
         session.setAttribute("tablero", tablero);
         return "";
     }
+
+    private String construir(int turno_actual, int casilla_actual, int casas, int hoteles, HttpServletRequest request) {        
+        HttpSession session = request.getSession();
+        Tablero tablero = (Tablero) session.getAttribute("tablero");
+        if (casas != 0 || hoteles != 0) {
+            tablero.construir(turno_actual, casilla_actual, casas, hoteles);
+        }
+        session.setAttribute("tablero", tablero);
+        return "";
+    }
+
+
     
     private String probar_estado_partida(Tablero tablero) {
         String ret = "";
@@ -482,6 +523,84 @@ public class Monopoly_Servlet extends HttpServlet {
             ret += "</span><br><br>"; 
         }
         return ret;
+    }
+    
+    private String guardar(HttpServletRequest request, String nombre_fichero) {
+        HttpSession session = request.getSession();
+        Tablero tablero = (Tablero) session.getAttribute("tablero");
+        String carpeta = tablero.getCarpeta();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(carpeta + "\\" + nombre_fichero));
+            oos.writeObject(tablero);
+            oos.close();            
+        } catch (IOException ex) {
+            Logger.getLogger(Monopoly_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        session.setAttribute("tablero", tablero);
+        return "";
+    }
+    
+    private String cargar(String carpeta, String fichero, HttpServletRequest request) {
+        Object aux = null;       
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(carpeta + "\\" + fichero));        
+            aux = ois.readObject();
+            while (aux!=null) {
+                if (aux instanceof Tablero) {
+                    System.out.println(aux);  // Se escribe en pantalla el objeto
+                }
+                aux = ois.readObject();
+                ois.close();
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Monopoly_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Monopoly_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ArrayList casillas = ((Tablero)aux).getCasillas();
+        
+        String ret = "<table border='1px black' style='border-collapse:collapse;'>";                    
+        ret += "<tr>";
+        for (int i = 20; i <= 30; i++) {
+            Casilla casilla = (Casilla)casillas.get(i);
+            String str_casilla = dibujar_casilla(casilla);
+            ret += "<td>" + str_casilla + "</td>";
+        }
+        ret += "</tr><tr>";
+        Casilla casilla = (Casilla)casillas.get(19);
+        String str_casilla = dibujar_casilla(casilla);
+        ret += "<td>" + str_casilla + "</td>";
+        ret += "<td colspan='9' rowspan='9' style='border-bottom:0px;border-top:0px;vertical-align=middle' align='center'><img src='img/monopoly.png'/></td>";
+        casilla = (Casilla)casillas.get(31);
+        str_casilla = dibujar_casilla(casilla);
+        ret += "<td>" + str_casilla + "</td></tr>";
+        
+        int j = 1;
+        for (int i = 18; i >= 11; i--) {
+           
+           casilla = (Casilla)casillas.get(i);
+           str_casilla = dibujar_casilla(casilla);
+           ret += "<tr><td>" + str_casilla + "</td>"; 
+
+           int k = i + (12 + (j*2));
+           casilla = (Casilla)casillas.get(k);
+           str_casilla = dibujar_casilla(casilla);
+           ret += "<td>" + str_casilla + "</td></tr>"; 
+
+           j++;
+        }
+        ret += "<tr>";
+        for (int i = 10; i >= 0; i--) {
+            casilla = (Casilla)casillas.get(i);
+            str_casilla = dibujar_casilla(casilla);
+            ret += "<td>" + str_casilla + "</td>";
+        }
+        ret += "</tr></table>";
+        HttpSession session = request.getSession();
+        session.setAttribute("tablero", (Tablero)aux);
+        return ret;
+        
     }
           
 }

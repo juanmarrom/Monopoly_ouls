@@ -35,6 +35,21 @@
                         document.getElementById("id_numero_jugadores").style.display = "inline";
                         document.getElementById("id_seleccion").style.display = "inline";                        
                     }
+                    if (valor == "cargar") {
+                        document.getElementById("id_menu").style.display = "none";
+                        document.getElementById("id_carpeta_2").style.display = "inline";   
+                        document.getElementById("id_carpeta_text_2").style.display = "inline";   
+                        document.getElementById("id_carpeta_3").style.display = "inline";   
+                        document.getElementById("id_carpeta_text_3").style.display = "inline";                           
+                        document.getElementById("id_cargar").style.display = "inline";                        
+                    }                    
+                }
+                
+                function cargar() {
+                    var nombre_fichero = document.getElementById("id_carpeta_3").value;
+                    var nombre_carpeta = document.getElementById("id_carpeta_2").value;
+                    alert(nombre_fichero);
+                    window.location.assign("monopoly.jsp?nuevo=0&nombre=" + nombre_fichero + "&carpeta=" + nombre_carpeta);                    
                 }
 
                 function numero_jugadores(valor) {
@@ -111,7 +126,7 @@
                         type: "post",
                         dataType: "html",
                         success: function(response) {
-                            location.href ="monopoly.jsp";  
+                            window.location.assign("monopoly.jsp?nuevo=1");  
                         }
                     });
                }
@@ -304,8 +319,14 @@
             </table>
             <br>
             <br>
-            <span id="id_carpeta_text"  style="display:none;">Introduzca ruta de ficheros de configuración:<span>&nbsp;<input id="id_carpeta" type="text" style="display:none; width: 300px;" value="C:\Users\User\Desktop\conf_monopoly">
+            <span id="id_carpeta_text"  style="display:none;">Introduzca ruta de ficheros de configuración:</span>&nbsp;<input id="id_carpeta" type="text" style="display:none; width: 300px;" value="C:\Users\User\Desktop\conf_monopoly">
             <br>
+            <br>
+            <span id="id_carpeta_text_2"  style="display:none;">Introduzca ruta:</span>&nbsp;<input id="id_carpeta_2" type="text" style="display:none; width: 300px;" value="C:\Users\User\Desktop\conf_monopoly">
+            <span id="id_carpeta_text_3"  style="display:none;">Introduzca nombre de fichero a cargar:</span>&nbsp;<input id="id_carpeta_3" type="text" style="display:none; width: 100px;" >
+            <input id="id_cargar" type="button" value="Aceptar" style="display:none; width: 100px;" onclick="cargar()">       
+            <br>
+            
             <br><br>
             <input id="id_aceptar" type="button" value="Aceptar" style="display:none; width: 100px;" onclick="crear_partida()">
         </center>
