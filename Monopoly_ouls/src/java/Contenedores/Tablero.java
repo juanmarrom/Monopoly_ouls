@@ -43,7 +43,7 @@ public class Tablero implements Serializable {
         //Tarjeta(int id, int tipo, String texto, int subtipo, int cobrar, int cantidad, int ir_a_casilla)
         tarjetas_suerte.add(new Tarjeta(0, 0, "Tus constucciones están mejorando, toma 150 del banco", 0, 1, 150, -1));
         tarjetas_suerte.add(new Tarjeta(1, 0, "Regalo año nuevo, vea la salida y cobra 200", 0, 1, 200, -1));
-        tarjetas_suerte.add(new Tarjeta(2, 0, "paga 50", 1, 1, 50, -1));
+        tarjetas_suerte.add(new Tarjeta(2, 0, "Paga 50", 1, 1, 50, -1));
         tarjetas_suerte.add(new Tarjeta(3, 0, "Impuesto gas, paga 15", 0, 0, 15, -1));
         tarjetas_suerte.add(new Tarjeta(4, 0, "A la carcel", 2, 0, 0, 10));
         tarjetas_suerte.add(new Tarjeta(5, 0, "Carta en blanco!!!", 3, 0, 0, -1));
@@ -59,7 +59,7 @@ public class Tablero implements Serializable {
         
         tarjetas_comunidad.add(new Tarjeta(0, 1, "Paga 100 al banco", 0, 0, 100, -1));
         tarjetas_comunidad.add(new Tarjeta(1, 1, "Paga 150 al banco", 0, 0, 150, -1));
-        tarjetas_comunidad.add(new Tarjeta(2, 1, "Cobra 50 a cada jugador", 0, 1, 50, -1));
+        tarjetas_comunidad.add(new Tarjeta(2, 1, "Cobra 50", 0, 1, 50, -1));
         tarjetas_comunidad.add(new Tarjeta(3, 1, "Heredas 100", 0, 1, 100, -1));
         tarjetas_comunidad.add(new Tarjeta(4, 1, "Paga 100 al banco", 0, 0, 100, -1));
         tarjetas_comunidad.add(new Tarjeta(5, 1, "Carta en blanco!!!", 0, 0, 0, -1));
@@ -618,7 +618,7 @@ public class Tablero implements Serializable {
                             ret += "Se puede edificar casas por:" + precio_casa;
                             ret += "</span><br>";                                
                             ret += "<span>";                
-                            ret += "Casas edficadas:" + num_casas;
+                            ret += "Casas edificadas:" + num_casas;
                             ret += "</span><br>"; 
                             ret += "Número casas a edificar:<select id='id_casas'>"; 
                             ret += "<option value=" + 0 +">" + 0 + "</option>"; 
