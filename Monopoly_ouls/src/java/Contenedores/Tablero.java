@@ -8,6 +8,7 @@ package Contenedores;
 import Iniciadores.Parsear_tablero;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -16,7 +17,11 @@ import java.util.ArrayList;
 public class Tablero implements Serializable {
     private ArrayList casillas;
     private ArrayList jugadores;
+    private ArrayList tarjetas_suerte;
+    private ArrayList tarjetas_comunidad;
     private int turno;
+    private int turno_tarjeta_suerte;
+    private int turno_tarjeta_comunidad;
     
     public Tablero(String carpeta) {
         Parsear_tablero parser = new Parsear_tablero();
@@ -25,8 +30,50 @@ public class Tablero implements Serializable {
         System.out.println("Tablero: C " + casillas.size());
         System.out.println("Tablero: J " + jugadores.size());
         this.turno = 0;
+        this.turno_tarjeta_suerte = 0;
+        this.turno_tarjeta_comunidad = 0;
+        crear_tarjetas();
     }
 
+    private void crear_tarjetas() {
+        tarjetas_suerte = new ArrayList();
+        tarjetas_comunidad = new ArrayList();
+        //Tarjeta(int id, int tipo, String texto, int subtipo, int cobrar, int cantidad, int ir_a_casilla)
+        tarjetas_suerte.add(new Tarjeta(0, 0, "Tus constucciones están mejorando, toma 150 del banco", 0, 1, 150, -1));
+        tarjetas_suerte.add(new Tarjeta(1, 0, "Regalo año nuevo, vea la salida y cobra 200", 0, 1, 200, -1));
+        tarjetas_suerte.add(new Tarjeta(2, 0, "Avanza al tren más cercano y compra o paga doble a su dueño", 1, 1, 0, -1));
+        tarjetas_suerte.add(new Tarjeta(3, 0, "Impuesto gas, paga 15", 0, 0, 15, -1));
+        tarjetas_suerte.add(new Tarjeta(4, 0, "A la carcel", 2, 0, 0, 10));
+        tarjetas_suerte.add(new Tarjeta(5, 0, "Paga 25 por casa y 100 por hotel", 3, 0, 0, -1));
+        tarjetas_suerte.add(new Tarjeta(6, 0, "Ir a CALLE DE MUNTANER", 0, 0, 0, 11));
+        tarjetas_suerte.add(new Tarjeta(7, 0, "Error de Calculo, pierdes 50", 0, 0, 50, -1));
+        tarjetas_suerte.add(new Tarjeta(8, 0, "Paga 25 a cada Jugador", 0, 0, 25, -1));
+        tarjetas_suerte.add(new Tarjeta(9, 0, "Tres pasos atras", 0, 0, 0, -1));
+        tarjetas_suerte.add(new Tarjeta(10, 0, "Cobra 100 de premio", 0, 0, 0, -1));
+        tarjetas_suerte.add(new Tarjeta(11, 0, "Paga 50 en comida", 0, 0, 0, -1));
+        Random r = new Random();
+        this.turno_tarjeta_suerte = r.nextInt(12)+1;
+        this.turno_tarjeta_suerte = (this.turno_tarjeta_suerte + 1) % this.tarjetas_suerte.size();  
+        
+        tarjetas_comunidad.add(new Tarjeta(0, 1, "Paga 100 al banco", 0, 0, 100, -1));
+        tarjetas_comunidad.add(new Tarjeta(1, 1, "Paga 150 al banco", 0, 0, 150, -1));
+        tarjetas_comunidad.add(new Tarjeta(2, 1, "Cobra 50 a cada jugador", 0, 1, 50, -1));
+        tarjetas_comunidad.add(new Tarjeta(3, 1, "Heredas 100", 0, 1, 100, -1));
+        tarjetas_comunidad.add(new Tarjeta(4, 1, "Paga 100 al banco", 0, 0, 100, -1));
+        tarjetas_comunidad.add(new Tarjeta(5, 1, "Paga 25 por casa y 100 por hotel", 0, 0, 0, -1));
+        tarjetas_comunidad.add(new Tarjeta(6, 1, "Cobras 200 del banco", 0, 1, 200, -1));
+        tarjetas_comunidad.add(new Tarjeta(7, 1, "Cobras 10 por guapetón", 0, 1, 10, -1));
+        tarjetas_comunidad.add(new Tarjeta(8, 1, "A la salida y te llevas 200", 0, 1, 200, 0));
+        tarjetas_comunidad.add(new Tarjeta(9, 1, "Paga 20", 0, 0, 20, 0));
+        tarjetas_comunidad.add(new Tarjeta(10, 0, "A la carcel", 2, 0, 0, 10));
+        tarjetas_comunidad.add(new Tarjeta(11, 0, "Multa de 50", 2, 0, 50, 0));
+        r = new Random();
+        turno_tarjeta_comunidad = r.nextInt(12)+1;
+        this.turno_tarjeta_comunidad = r.nextInt(12)+1;
+        this.turno_tarjeta_comunidad = (this.turno_tarjeta_comunidad + 1) % this.tarjetas_comunidad.size();  
+        
+    }
+    
     /**
      * @return the casillas
      */
@@ -49,14 +96,28 @@ public class Tablero implements Serializable {
     }
     
     public int getTurno() {
-        return turno;
+        if (ajustar_turno() == 0) {
+            return turno;
+        }
+        else {
+            while (ajustar_turno() == 1) {
+                setTurno();
+            }
+            return turno;
+        }
     }
+    
+    private int ajustar_turno() {        
+        int turno_actual_pos = this.turno;
+        //tablero.setTurno();        
+        return ((Jugador)getJugadores().get(turno_actual_pos)).getEliminado();        
+    }        
 
     /**
      * @param jugadores the jugadores to set
      */
     public void setTurno() {
-        this.turno = (this.turno + 1) % this.jugadores.size();
+        this.turno = (this.turno + 1) % this.jugadores.size();        
     }  
 
     public void setTurnoAtras() {
@@ -351,10 +412,127 @@ public class Tablero implements Serializable {
                     ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";                    
                 }                
             } 
-            if (tipo == 4) {//Suerte/caja comunidad
-                ret += "<span>";                
-                ret += "Ha caido en Tarjeta";
-                ret += "</span><br><br>";
+            if (tipo == 4) {//Suerte/caja comunidad                
+                //comunidad 2, 17, 33
+                if (casilla_actual == 2 || casilla_actual == 17 || casilla_actual == 33) {
+                    ret += "<span>";                
+                    ret += "Ha caido en Tarjeta Caja de comunidad";
+                    ret += "</span><br><br>";
+        /*tarjetas_comunidad.add(new Tarjeta(0, 1, "Paga 100 al banco", 0, 0, 100, -1));
+        tarjetas_comunidad.add(new Tarjeta(1, 1, "Paga 150 al banco", 0, 0, 150, -1));
+        tarjetas_comunidad.add(new Tarjeta(2, 1, "Cobra 50 a cada jugador", 0, 1, 50, -1));
+        tarjetas_comunidad.add(new Tarjeta(3, 1, "Heredas 100", 0, 1, 100, -1));
+        tarjetas_comunidad.add(new Tarjeta(4, 1, "Paga 100 al banco", 0, 0, 100, -1));
+        tarjetas_comunidad.add(new Tarjeta(5, 1, "Paga 25 por casa y 100 por hotel", 0, 0, 0, -1));
+        tarjetas_comunidad.add(new Tarjeta(6, 1, "Cobras 200 del banco", 0, 1, 200, -1));
+        tarjetas_comunidad.add(new Tarjeta(7, 1, "Cobras 10 por guapetón", 0, 1, 10, -1));
+        tarjetas_comunidad.add(new Tarjeta(8, 1, "A la salida y te llevas 200", 0, 1, 200, 0));
+        tarjetas_comunidad.add(new Tarjeta(9, 1, "Paga 20", 0, 0, 20, 0));
+        tarjetas_comunidad.add(new Tarjeta(10, 0, "A la carcel", 2, 0, 0, 10));
+        tarjetas_comunidad.add(new Tarjeta(11, 0, "Multa de 50", 2, 0, 50, 0));*/
+                    Tarjeta tarjeta = (Tarjeta)tarjetas_comunidad.get(this.turno_tarjeta_comunidad);
+                    String texto = tarjeta.getTexto();
+                    if (this.turno_tarjeta_comunidad == 0) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 1) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 2) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 3) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 4) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 5) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 6) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 7) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 8) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 9) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 10) {
+                    
+                    }
+                    if (this.turno_tarjeta_comunidad == 11) {
+                    
+                    }
+                    
+                    this.turno_tarjeta_comunidad = (this.turno_tarjeta_comunidad + 1) % this.tarjetas_comunidad.size();  
+
+                }
+                //suerte 7, 22, 36
+                if (casilla_actual == 7 || casilla_actual == 22 || casilla_actual == 36) {
+                    ret += "<span>";                
+                    ret += "Ha caido en Tarjeta de Suerte";
+                    ret += "</span><br><br>";
+                    Tarjeta tarjeta = (Tarjeta)tarjetas_suerte.get(this.turno_tarjeta_suerte);
+                    String texto = tarjeta.getTexto();
+                    if (this.turno_tarjeta_suerte == 0) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 1) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 2) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 3) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 4) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 5) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 6) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 7) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 8) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 9) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 10) {
+                    
+                    }
+                    if (this.turno_tarjeta_suerte == 11) {
+                    
+                    }
+                    
+                    this.turno_tarjeta_suerte = (this.turno_tarjeta_suerte + 1) % this.tarjetas_suerte.size();                      
+                }                 
+                /*tarjetas_suerte.add(new Tarjeta(0, 0, "Tus constucciones están mejorando, toma 150 del banco", 0, 1, 150, -1));
+                tarjetas_suerte.add(new Tarjeta(1, 0, "Regalo año nuevo, vea la salida y cobra 200", 0, 1, 200, -1));
+                tarjetas_suerte.add(new Tarjeta(2, 0, "Avanza al tren más cercano y compra o paga doble a su dueño", 1, 1, 0, -1));
+                tarjetas_suerte.add(new Tarjeta(3, 0, "Impuesto gas, paga 15", 0, 0, 15, -1));
+                tarjetas_suerte.add(new Tarjeta(4, 0, "A la carcel", 2, 0, 0, 10));
+                tarjetas_suerte.add(new Tarjeta(5, 0, "Paga 25 por casa y 100 por hotel", 3, 0, 0, -1));
+                tarjetas_suerte.add(new Tarjeta(6, 0, "Ir a CALLE DE MUNTANER", 0, 0, 0, 11));
+                tarjetas_suerte.add(new Tarjeta(7, 0, "Error de Calculo, pierdes 50", 0, 0, 50, -1));
+                tarjetas_suerte.add(new Tarjeta(8, 0, "Paga 25 a cada Jugador", 0, 0, 25, -1));
+                tarjetas_suerte.add(new Tarjeta(9, 0, "Tres pasos atras", 0, 0, 0, -1));
+                tarjetas_suerte.add(new Tarjeta(10, 0, "Cobra 100 de premio", 0, 0, 0, -1));
+                tarjetas_suerte.add(new Tarjeta(11, 0, "Paga 50 en comida", 0, 0, 0, -1));
+                */
+                
+                
                 
                 
                 ret += "<br><br><span id='id_turno_jugador'>";
@@ -425,54 +603,79 @@ public class Tablero implements Serializable {
                 ret += "</span><br><br>";   */
         }
         else { //pertenece alguien, a pagar segun lo que tenga el dueño
-            if (casilla_pertenece_a == turno_actual) {//ediifcar o no hacer nada
+            if (casilla_pertenece_a == turno_actual) {//ediifcar o no hacer nada: Solo se puede edificar si todo el grupo es mio
                 if (tipo == 1) {
-                    int num_casas = datos_casilla.getNumero_casas();
-                    int num_hoteles = datos_casilla.getNumero_casas();
-                    int precio_casa = datos_casilla.getPrecio_casa();
-                    int precio_hotel = datos_casilla.getPrecio_hotel();
-                    if (num_casas < 4) {
-                        ret += "<span>";                
-                        ret += "Se puede edificar casas por:" + precio_casa;
-                        ret += "</span><br>";                                
-                        ret += "<span>";                
-                        ret += "Casas edficadas:" + num_casas;
-                        ret += "</span><br>"; 
-                        ret += "Número casas a edificar:<select id='id_casas'>"; 
-                        ret += "<option value=" + 0 +">" + 0 + "</option>"; 
-                        for (int i = 1; i <= 4 - num_casas; i++) {
-                            ret += "<option value=" + i +">" + i + "</option>"; 
+                    int numero_casillas_grupo = datos_casilla.getTotal_grupo();
+                    int encontradas = 0;
+                    for (int i = 0; i < casillas_grupo.size(); i++) {                        
+                        int del_grupo = (Integer)casillas_grupo.get(i);
+                        Casilla datos_casilla_grupo = ((Casilla)casillas.get(del_grupo));
+                        int pertenece_a_jugador_de_grupo = datos_casilla_grupo.getPertenece_a_jugador();
+                        if (pertenece_a_jugador_de_grupo == casilla_pertenece_a) {//la casilla pertenece a el jugador
+                            encontradas++;
+                        } 
+                    }
+                    
+                    if (encontradas == numero_casillas_grupo) {
+                        int num_casas = datos_casilla.getNumero_casas();
+                        int num_hoteles = datos_casilla.getNumero_casas();
+                        int precio_casa = datos_casilla.getPrecio_casa();
+                        int precio_hotel = datos_casilla.getPrecio_hotel();
+                        if (num_casas < 4) {
+                            ret += "<span>";                
+                            ret += "Se puede edificar casas por:" + precio_casa;
+                            ret += "</span><br>";                                
+                            ret += "<span>";                
+                            ret += "Casas edficadas:" + num_casas;
+                            ret += "</span><br>"; 
+                            ret += "Número casas a edificar:<select id='id_casas'>"; 
+                            ret += "<option value=" + 0 +">" + 0 + "</option>"; 
+                            for (int i = 1; i <= 4 - num_casas; i++) {
+                                ret += "<option value=" + i +">" + i + "</option>"; 
+                            }
+                            ret += "</select><br><br>"; 
                         }
-                        ret += "</select><br><br>"; 
+                        if (num_hoteles == 0) {
+                            ret += "<span>";                
+                            ret += "Se puede edificar hotel por:" + precio_casa;
+                            ret += "</span><br>";                                
+                            ret += "Número hoteles a edificar:<select id='id_hoteles'>"; 
+                            ret += "<option value=" + 0 +">" + 0 + "</option>"; 
+                            ret += "<option value=" + 1 +">" + 1 + "</option>";                         
+                            ret += "</select><br><br>";
+                        }
+                        if (num_casas >= 4 && num_hoteles > 0) {
+                            ret += "<span>";                
+                            ret += "No se puede Edificar más";
+                            ret += "</span><br><br>";                                
+                            ret += "<br><br><span id='id_turno_jugador'>";
+                            ret += "<br><br><span id='id_turno_jugador'>";
+                            int turno = getTurno() + 1;
+                            ret += "El turno lo tiene el jugador " + turno;
+                            ret += "</span><br><br>";
+                            ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";                                                            
+                            return ret;
+                        }
+                        ret += "<input type='button' value='Continuar' id='id_const' style='width: 100px;' onclick='construir(" + turno_actual + "," + casilla_actual + ")'>";                
+                        ret += "<br><br><span id='id_turno_jugador' style='display:none;'>";
+                        int turno = getTurno() + 1;
+                        ret += "El turno lo tiene el jugador " + turno;
+                        ret += "</span><br><br>";
+                        ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px; display:none;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
                     }
-                    if (num_hoteles == 0) {
+                    else {
                         ret += "<span>";                
-                        ret += "Se puede edificar hotel por:" + precio_casa;
-                        ret += "</span><br>";                                
-                        ret += "Número hoteles a edificar:<select id='id_hoteles'>"; 
-                        ret += "<option value=" + 0 +">" + 0 + "</option>"; 
-                        ret += "<option value=" + 1 +">" + 1 + "</option>";                         
-                        ret += "</select><br><br>";
-                    }
-                    if (num_casas >= 4 && num_hoteles > 0) {
+                        ret += "No se puede Edificar";
+                        ret += "</span><br>";
                         ret += "<span>";                
-                        ret += "No se puede Edificar más";
-                        ret += "</span><br><br>";                                
-                        ret += "<br><br><span id='id_turno_jugador'>";
+                        ret += "El grupo son " + numero_casillas_grupo + " y el jug. tiene " + encontradas;
+                        ret += "</span><br>";                        
                         ret += "<br><br><span id='id_turno_jugador'>";
                         int turno = getTurno() + 1;
                         ret += "El turno lo tiene el jugador " + turno;
                         ret += "</span><br><br>";
-                        ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";                                                            
-                        return ret;
+                        ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
                     }
-                    ret += "<input type='button' value='Continuar' id='id_const' style='width: 100px;' onclick='construir(" + turno_actual + "," + casilla_actual + ")'>";                
-                    ret += "<br><br><span id='id_turno_jugador' style='display:none;'>";
-                    int turno = getTurno() + 1;
-                    ret += "El turno lo tiene el jugador " + turno;
-                    ret += "</span><br><br>";
-                    ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px; display:none;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
-                   
                 }
                 else {
                     ret += "<span>";                
@@ -621,10 +824,10 @@ public class Tablero implements Serializable {
                 Jugador jugador2 = (Jugador)jugadores.get(casilla_pertenece_a);
                 jugador2.setDineroTotal(jugador2.getDineroTotal() + a_pagar);
                 ret += "<span>";                
-                ret += "El jug. " + (jugador.getId()) + "dispone de " + jugador.getDineroTotal();
+                ret += "El jug. " + (jugador.getId()) + " dispone de " + jugador.getDineroTotal();
                 ret += "</span><br>";
                 ret += "<span>";                
-                ret += "El jug. " + (jugador2.getId()) + "dispone de " + jugador2.getDineroTotal();
+                ret += "El jug. " + (jugador2.getId()) + " dispone de " + jugador2.getDineroTotal();
                 ret += "</span><br>";                                                
                 ret += "<br><br><span id='id_turno_jugador'>";
                 ret += "El turno lo tiene el jugador " + turno;
@@ -642,6 +845,21 @@ public class Tablero implements Serializable {
         Casilla datos_casilla = ((Casilla)casillas.get(casilla_actual));
         jugador.setDineroTotal(jugador.getDineroTotal() - datos_casilla.getPrecio());
         datos_casilla.setPertenece_a_jugador(turno_actual);        
-    }    
+    }   
+    
+    public void limpiar_casillas_eliminado(int indice_array_jugador) {
+        Jugador jugador = (Jugador)jugadores.get(indice_array_jugador);
+        int id_jugador_eliminado = jugador.getId();
+        for (int i = 0; i < casillas.size(); i++) {                        
+            Casilla casilla = ((Casilla)casillas.get(i));
+            int pertenece_a_jugador = casilla.getPertenece_a_jugador();
+            if (id_jugador_eliminado == pertenece_a_jugador) {
+                casilla.setPertenece_a_jugador(-1);
+                casilla.setNumero_casas(0);
+                casilla.setNumero_hoteles(0);
+                casilla.setTengo_grupo(0);
+            }                            
+        }        
+    }
     
 }

@@ -242,10 +242,17 @@ public class Monopoly_Servlet extends HttpServlet {
             int numero_jugador = i + 1;            
             Jugador jugador = (Jugador)jugadores.get(i);
             String str_jugador = jugador.getNombre();
-            int dinero = jugador.getDineroTotal();
-            
-            ret += "<td style=\"cursor: pointer\" onclick='window.open(\"jugador.jsp?id=" + (i + 1) + "\",\"miventana\",\"width=600,height=600,menubar=no\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
+            int dinero = jugador.getDineroTotal();            
+            int eliminado = jugador.getEliminado();
+            ret += "<td style=\"cursor: pointer\" onclick='window.open(\"jugador.jsp?id=" + (i + 1) + "\",\"miventana\",\"width=600,height=600,menubar=no\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador; 
+            if (eliminado != 0) {
+                ret += "&nbsp;&nbsp;<b>Eliminado</b></td>";
+            }
+            else {
+                ret += "&nbsp;&nbsp;(" + dinero + ")</td>";
+            }
             String color_jugador = jugador.getColor();
+            
             if (color_jugador.compareToIgnoreCase("azul") == 0) {
                 ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
             }
@@ -331,6 +338,11 @@ public class Monopoly_Servlet extends HttpServlet {
                 }
             }
         }
+        String ret = "";
+        if ( (((Jugador)tablero.getJugadores().get(turno_actual_pos)).getEsta_en_casilla() + dado1 + dado2) >= 40) {// se ha pasado por la casilla de salida
+            //jugador_actual.setDineroTotal(jugador_actual.getDineroTotal() + 200); //200 mas
+            ret += "<span><b>El jugador " + turno_actual + " ha pasado por la salida (ingresa 200)</b><br></span>";
+        }
         
         ((Jugador)tablero.getJugadores().get(turno_actual_pos)).setEsta_en_casilla(dado1 + dado2);
         int casilla_despues_de_tirar = ((Jugador)tablero.getJugadores().get(turno_actual_pos)).getEsta_en_casilla();
@@ -353,14 +365,21 @@ public class Monopoly_Servlet extends HttpServlet {
             jugador_actual.setVeces_salio_doble(0);
         }
                                      
-        String ret = "<table border='1px black' style='border-collapse:collapse; padding-left: 5px; padding-right: 5px;'>";                            
+        ret += "<table border='1px black' style='border-collapse:collapse; padding-left: 5px; padding-right: 5px;'>";                            
         for (int i = 0; i < jugadores.size(); i++) {
             ret += "<tr>";
             int numero_jugador = i + 1;            
             Jugador jugador = (Jugador)jugadores.get(i);
             String str_jugador = jugador.getNombre();            
             int dinero = jugador.getDineroTotal();
-            ret += "<td style=\"cursor: pointer\" onclick='window.open(\"jugador.jsp?id=" + (i + 1) + "\",\"miventana\",\"width=600,height=600,menubar=no\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador + "&nbsp;&nbsp;(" + dinero + ")</td>";
+            int eliminado = jugador.getEliminado();
+            ret += "<td style=\"cursor: pointer\" onclick='window.open(\"jugador.jsp?id=" + (i + 1) + "\",\"miventana\",\"width=600,height=600,menubar=no\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador; 
+            if (eliminado != 0) {
+                ret += "&nbsp;&nbsp;<b>Eliminado</b></td>";
+            }
+            else {
+                ret += "&nbsp;&nbsp;(" + dinero + ")</td>";
+            }                      
             String color_jugador = jugador.getColor();
             if (color_jugador.compareToIgnoreCase("azul") == 0) {
                 ret += "<td style=\"background-color:blue\">&nbsp;&nbsp;</td>";
@@ -421,7 +440,10 @@ public class Monopoly_Servlet extends HttpServlet {
         ret += "<input id='id_boton_turno_jugador' type='button' value='Tirar Dado' style='width: 100px; display:none;' onclick='tirar_dado(" + turno + "," + numero_jugadores + ")'>";
         */
         session.setAttribute("tablero", tablero);
-        probar_estado_partida(tablero);
+        String fin = probar_estado_partida(tablero);
+        if (!fin.isEmpty()) {
+            return fin;
+        }
         return ret;
     }  
     
@@ -434,26 +456,32 @@ public class Monopoly_Servlet extends HttpServlet {
     }
     
     private String probar_estado_partida(Tablero tablero) {
+        String ret = "";
         ArrayList jugadores = tablero.getJugadores();
         int jugadores_eliminado = 0;
         int jugadores_activos = 0;
+        int ganador = 0;
         for (int i = 0; i < jugadores.size(); i++) {                        
             Jugador jugador = (Jugador)jugadores.get(i);
             int dinero = jugador.getDineroTotal();
-            if (dinero < 0) {
-                jugador.setEliminado(1);
+            if (dinero < 0 || jugador.getEliminado() == 1) {
+                if (jugador.getEliminado() == 0) {
+                    jugador.setEliminado(1);
+                    tablero.limpiar_casillas_eliminado(i);                    
+                }
                 jugadores_eliminado++;
             }
             else {
                 jugadores_activos++;
+                ganador = jugador.getId();
             }
         }
         if (jugadores_activos == 1) {//FIN
-            return "";
+            ret += "<span>";
+            ret += "<b>El jugador " + ganador + " ha ganado!!!!!</b>";
+            ret += "</span><br><br>"; 
         }
-        else {
-            return "";
-        }
+        return ret;
     }
-    
+          
 }
