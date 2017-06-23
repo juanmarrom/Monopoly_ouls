@@ -295,4 +295,11 @@ public class Jugador implements Serializable {
         this.esta_en_la_carcel = esta_en_la_carcel;
     }
     
+
+    /**
+     * @param casillas the casillas to set
+     */
+    public void setCasillas(Casilla casilla) {
+        this.casillas.add(casilla);
+    }    
 }

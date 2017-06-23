@@ -273,12 +273,13 @@ public class Monopoly_Servlet extends HttpServlet {
             String str_jugador = jugador.getNombre();
             int dinero = jugador.getDineroTotal();            
             int eliminado = jugador.getEliminado();
+			int str_casilla_jugador = jugador.getEsta_en_casilla();
             ret += "<td style=\"cursor: pointer\" onclick='window.open(\"jugador.jsp?id=" + (i + 1) + "\",\"miventana\",\"width=600,height=600,menubar=no\");'>&nbsp;&nbsp;Jugador " + numero_jugador + "&nbsp;&nbsp;" + str_jugador; 
             if (eliminado != 0) {
                 ret += "&nbsp;&nbsp;<b>Eliminado</b></td>";
             }
             else {
-                ret += "&nbsp;&nbsp;(" + dinero + ")</td>";
+                ret += "&nbsp;&nbsp;(" + dinero + ")&nbsp;&nbsp;</td>";
             }
             String color_jugador = jugador.getColor();
             
@@ -476,13 +477,31 @@ public class Monopoly_Servlet extends HttpServlet {
         return ret;
     }  
     
-    private String comprar(int turno_actual, int casilla_actual, HttpServletRequest request) {
+    /*private String comprar(int turno_actual, int casilla_actual, HttpServletRequest request) {
         HttpSession session = request.getSession();
         Tablero tablero = (Tablero) session.getAttribute("tablero");   
         tablero.comprar(turno_actual, casilla_actual);
         session.setAttribute("tablero", tablero);
         return "";
-    }
+    }*/
+    
+    private String comprar(int turno_actual, int casilla_actual, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Tablero tablero = (Tablero) session.getAttribute("tablero");
+        int turno_actual_pos = turno_actual;
+        Jugador jugador_actual = ((Jugador) tablero.getJugadores().get(turno_actual_pos));
+        ArrayList casillas = tablero.getCasillas();
+        for(int i=0; i<casillas.size(); i++){
+            Casilla casilla = ( (Casilla) casillas.get(i));
+            if(casilla.getId() == casilla_actual){
+                jugador_actual.setCasillas(casilla);
+            }
+        }
+        tablero.comprar(turno_actual, casilla_actual);
+        session.setAttribute("tablero", tablero);
+        return "";
+    }    
+    
 
     private String construir(int turno_actual, int casilla_actual, int casas, int hoteles, HttpServletRequest request) {        
         HttpSession session = request.getSession();

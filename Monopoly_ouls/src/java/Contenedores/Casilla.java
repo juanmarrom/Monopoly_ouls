@@ -57,7 +57,9 @@ public class Casilla implements Serializable {
         this.numero_casas = 0;
         this.numero_hoteles = 0;
         this.tengo_grupo = 0;        
-    }            
+    }      
+    
+    public Casilla(){};
 
     /**
      * @return the id
